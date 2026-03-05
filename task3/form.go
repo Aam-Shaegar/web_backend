@@ -3,15 +3,20 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/http/cgi"
 )
 
-func main() {
-	fmt.Println("Content-Type: text/html")
-	fmt.Println()
+func handler(w http.ResponseWriter, r *http.Request) {
 
-	err := (&http.Request{}).ParseForm()
-
+	err := r.ParseForm()
 	if err != nil {
-		fmt.Println("Form reading error")
+		fmt.Fprintln(w, "Form reading error")
+		return
 	}
+
+	fmt.Fprintln(w, "<h1>CGI работает</h1>")
+}
+
+func main() {
+	cgi.Serve(http.HandlerFunc(handler))
 }
