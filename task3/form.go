@@ -15,6 +15,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, "<h1>CGI работает</h1>")
+
+	for key, values := range r.Form {
+		for _, value := range values {
+			fmt.Fprintf(w, "%s = %s <br>", key, value)
+		}
+	}
 }
 
 func main() {
