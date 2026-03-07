@@ -117,7 +117,7 @@ func validate(r *http.Request) (FormData, []string) {
 func saveToDatabase(db *sql.DB, data FormData) error {
 	stmt, err := db.Prepare(`
 		INSERT INTO applications (full_name, phone, email,
-		birthdate, gender, biography, contract_accepted)
+		birth_date, gender, biography, contract_accepted)
 		VALUES (?, ?, ?, ?, ?, ?, 1)
 	`)
 	if err != nil {
