@@ -42,9 +42,9 @@ func validate(r *http.Request) (FormData, []string) {
 	name := strings.TrimSpace(r.FormValue("name"))
 	if name == "" {
 		errors = append(errors, "Name is required")
-	} else if utf8.RuneCountInString(name) > 50 {
+	} else if utf8.RuneCountInString(name) > 150 {
 		errors = append(errors, "Name must be at most 50 characters")
-	} else if ok, _ := regexp.MatchString(`^[a-zA-Z\s]+$`, name); !ok {
+	} else if ok, _ := regexp.MatchString(`^[\p{L}]+$`, name); !ok {
 		errors = append(errors, "Name contains invalid characters")
 	} else {
 		data.Name = name
@@ -53,8 +53,8 @@ func validate(r *http.Request) (FormData, []string) {
 	phone := strings.TrimSpace(r.FormValue("phone"))
 	if phone == "" {
 		errors = append(errors, "Phone is required")
-	} else if ok, _ := regexp.MatchString(`^\d{10}$`, phone); !ok {
-		errors = append(errors, "Phone must be exactly 10 digits")
+	} else if ok, _ := regexp.MatchString(`^\+?[0-9()\- ]{7,32}$`, phone); !ok {
+		errors = append(errors, "Phone format is invalid")
 	} else {
 		data.Phone = phone
 	}
@@ -83,7 +83,7 @@ func validate(r *http.Request) (FormData, []string) {
 		data.Gender = gender
 	}
 
-	languages := r.Form["languages"]
+	languages := r.Form["languages[]"]
 	if len(languages) == 0 {
 		errors = append(errors, "At least one language must be selected")
 	} else {
@@ -116,7 +116,7 @@ func validate(r *http.Request) (FormData, []string) {
 
 func saveToDatabase(db *sql.DB, data FormData) error {
 	stmt, err := db.Prepare(`
-		INSERT INTO users (full_name, phone, email,
+		INSERT INTO applications (full_name, phone, email,
 		birthdate, gender, biography, contract_accepted)
 		VALUES (?, ?, ?, ?, ?, ?, 1)
 	`)
