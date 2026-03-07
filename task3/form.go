@@ -43,8 +43,8 @@ func validate(r *http.Request) (FormData, []string) {
 	if name == "" {
 		errors = append(errors, "Name is required")
 	} else if utf8.RuneCountInString(name) > 150 {
-		errors = append(errors, "Name must be at most 50 characters")
-	} else if ok, _ := regexp.MatchString(`^[\p{L}]+$`, name); !ok {
+		errors = append(errors, "Name must be at most 150 characters")
+	} else if ok, _ := regexp.MatchString(`^[\p{L} ]+$`, name); !ok {
 		errors = append(errors, "Name contains invalid characters")
 	} else {
 		data.Name = name
